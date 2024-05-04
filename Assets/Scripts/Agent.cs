@@ -6,34 +6,37 @@ using Random = System.Random;
 public class Agent : MonoBehaviour
 {
     [SerializeField] public float speed = 5f;
-    private Vector2 movement;
-    private Rigidbody2D rb;
-    private Random _random = new Random();
     [SerializeField] DragDrop dragDrop;
     [SerializeField] Player player;
     [SerializeField] Animator playerAnimator;
+    
+    private Vector2 movement;
+    private Rigidbody2D rb;
+    private Random _random = new Random();
     private bool amICovered = false;
+    private float initialSpeed;
+    
     public bool gameOver = false;
+    
+    private float nextActionTime = 0.0f;
+    public float periodToWait = 0.65f;
+    
     
     void Start()
     {
+        initialSpeed = speed;
         rb = GetComponent<Rigidbody2D>();
         //movement = Vector2.right;
         movement = new Vector2(1, 0);
-        
     }
     
-    
-    private float nextActionTime = 0.0f;
-    public float period = 0.65f;
-
     private void Update () {
         if(amICovered) Debug.Log("Agent is covered");
 
         if (!gameOver)
         {
             if (Time.time > nextActionTime ) { //Every 1 second, check if the agent is covered and if so, wait for a random time between 1 and 4 seconds
-                nextActionTime += period;
+                nextActionTime += periodToWait;
                 if (amICovered)
                 {
                     int randomValue = _random.Next(0, 100);
@@ -44,10 +47,19 @@ public class Agent : MonoBehaviour
             }
         }
     }
-    
+
+    private void OnParticleCollision(GameObject other)
+    {
+        gameOver = true;
+        speed = 0;
+        dragDrop.allowDrag = false;
+        player.stopDecrease = true;
+        playerAnimator.SetBool("die", true);
+        //TODO: Display You Win Screen
+    }
+
     IEnumerator WaitUnderCover()
     {
-        float initialSpeed = speed;
         speed = 0;
         playerAnimator.SetBool("idle", true);
         
@@ -67,13 +79,19 @@ public class Agent : MonoBehaviour
 
         if (!gameOver)
         {
-            Vector3 aBitUp = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
+            //+0.75f to make the center of the ray a bit higher
+            Vector3 leftShoulder = new Vector3(transform.position.x - 0.3f, transform.position.y + 0.75f, transform.position.z);
+            Vector3 rightShoulder = new Vector3(transform.position.x + 0.3f, transform.position.y + 0.75f, transform.position.z);
         
-            RaycastHit2D hit = Physics2D.Raycast(aBitUp, Vector2.up, 5);
+            RaycastHit2D hitFromLeftShoulderRay = Physics2D.Raycast(leftShoulder, Vector2.up, 5);
+            Debug.DrawRay(leftShoulder, Vector2.up * 5, Color.red);
+            
+            RaycastHit2D hitFromRightShoulderRay = Physics2D.Raycast(rightShoulder, Vector2.up, 5);
+            Debug.DrawRay(rightShoulder, Vector2.up * 5, Color.red);
 
             try
             {
-                if (hit.collider.CompareTag("Cover"))
+                if (hitFromLeftShoulderRay.collider.CompareTag("Cover") && hitFromRightShoulderRay.collider.CompareTag("Cover")) // To prevent waiting at the edges of the covers
                 {
                     amICovered = true;
                 }
@@ -87,7 +105,6 @@ public class Agent : MonoBehaviour
         
     }
     
-
 
     private void OnTriggerEnter2D(Collider2D other)
     {
