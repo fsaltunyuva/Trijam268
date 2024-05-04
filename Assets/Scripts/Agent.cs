@@ -199,5 +199,6 @@ public class Agent : MonoBehaviour
         gameStarted = true;
         playerAnimator.SetBool("idle", false);
         playerAnimator.SetBool("run", true);
+        audioSource.Play();
     }
 }
