@@ -1034,7 +1034,7 @@ MonoBehaviour:
   rain: {fileID: 1956410182088830574}
   rainParticleSystemGameObject: {fileID: 1956410182088830576}
   acidSlider: {fileID: 73820133}
-  acidDecreaseRate: 20
+  acidDecreaseRate: 25
   agentScript: {fileID: 2081574328}
   winPanel: {fileID: 1006746153}
   losePanel: {fileID: 908071231}
@@ -7675,7 +7675,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 912245f6d630cf04e9fc00b92d2f1361, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3.5
+  speed: 4.3
   cloud: {fileID: 939475931}
   player: {fileID: 198360924}
   playerAnimator: {fileID: 2081574329}

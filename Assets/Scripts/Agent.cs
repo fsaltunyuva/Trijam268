@@ -87,7 +87,8 @@ public class Agent : MonoBehaviour
 
     private void FixedUpdate()
     {
-        transform.Translate(movement * speed * Time.fixedDeltaTime);
+        if(!gameOver)
+            transform.Translate(movement * speed * Time.fixedDeltaTime);
         FlipSprite();
 
         if (!gameOver)
