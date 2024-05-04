@@ -9,6 +9,7 @@ TagManager:
   - RightBlockerTriggerer
   - DragLimit
   - EndTriggerer
+  - Cover
   layers:
   - Default
   - TransparentFX
@@ -16,8 +17,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - DragLimiter
+  - Cloud
   - 
   - 
   - 

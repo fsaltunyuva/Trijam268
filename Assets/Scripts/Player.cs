@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Slider acidSlider;
     [SerializeField] private float acidDecreaseRate = 1f;
     public bool stopDecrease = false;
+    [SerializeField] Agent agentScript;
 
     private void Start()
     {
@@ -22,28 +23,31 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKey(KeyCode.Space)) // Check if space is pressed 
+        if (!agentScript.gameOver)
         {
-            if (acids > 0) // Check if there are acids left
+            if(Input.GetKey(KeyCode.Space)) // Check if space is pressed 
             {
-                if(!stopDecrease)
-                    acids -= acidDecreaseRate * Time.deltaTime; // Decrease acids
-                var emission = rain.emission;
-                emission.rateOverTime = initialEmissionRate;
+                if (acids > 0) // Check if there are acids left
+                {
+                    if(!stopDecrease)
+                        acids -= acidDecreaseRate * Time.deltaTime; // Decrease acids
+                    var emission = rain.emission;
+                    emission.rateOverTime = initialEmissionRate;
+                }
+                else
+                {
+                    var emission = rain.emission;
+                    emission.rateOverTime = 0;
+                }
             }
             else
             {
                 var emission = rain.emission;
                 emission.rateOverTime = 0;
             }
-        }
-        else
-        {
-            var emission = rain.emission;
-            emission.rateOverTime = 0;
-        }
         
-        acidSlider.value = acids; // Update slider value
+            acidSlider.value = acids; // Update slider value
+        }
     }
 
     private void OnParticleCollision(GameObject other)

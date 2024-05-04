@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using Random = System.Random;
 
@@ -10,20 +12,82 @@ public class Agent : MonoBehaviour
     [SerializeField] DragDrop dragDrop;
     [SerializeField] Player player;
     [SerializeField] Animator playerAnimator;
-
+    private bool amICovered = false;
+    public bool gameOver = false;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         //movement = Vector2.right;
         movement = new Vector2(1, 0);
+        
+    }
+    
+    
+    private float nextActionTime = 0.0f;
+    public float period = 0.65f;
+
+    private void Update () {
+        if(amICovered) Debug.Log("Agent is covered");
+
+        if (!gameOver)
+        {
+            if (Time.time > nextActionTime ) { //Every 1 second, check if the agent is covered and if so, wait for a random time between 1 and 4 seconds
+                nextActionTime += period;
+                if (amICovered)
+                {
+                    int randomValue = _random.Next(0, 100);
+            
+                    if(randomValue < 20)
+                        StartCoroutine(WaitUnderCover());
+                }
+            }
+        }
+    }
+    
+    IEnumerator WaitUnderCover()
+    {
+        float initialSpeed = speed;
+        speed = 0;
+        playerAnimator.SetBool("idle", true);
+        
+        //Wait between 1 and 3 seconds including float values
+        float randomSeconds = _random.Next(1, 3) + (float)_random.NextDouble();
+        Debug.Log("Waiting for " + randomSeconds + " seconds");
+        yield return new WaitForSeconds(randomSeconds);
+        
+        playerAnimator.SetBool("idle", false);
+        speed = initialSpeed;
     }
 
     private void FixedUpdate()
     {
-        //rb.velocity = movement * speed * Time.fixedDeltaTime;
         transform.Translate(movement * speed * Time.fixedDeltaTime);
         FlipSprite();
+
+        if (!gameOver)
+        {
+            Vector3 aBitUp = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
+        
+            RaycastHit2D hit = Physics2D.Raycast(aBitUp, Vector2.up, 5);
+
+            try
+            {
+                if (hit.collider.CompareTag("Cover"))
+                {
+                    amICovered = true;
+                }
+                else
+                {
+                    amICovered = false;
+                }
+            }
+            catch (Exception e) {}
+        }
+        
     }
+    
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -43,11 +107,12 @@ public class Agent : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("EndTriggerer"))
         {
+            gameOver = true;
             //TODO: Display Game Over Screen
             speed = 0;
-            dragDrop.allowDrag = false;
+            //dragDrop.allowDrag = false;
             player.stopDecrease = true;
-            playerAnimator.SetBool("run", false);
+            playerAnimator.SetBool("idle", true);
             
         }
     }

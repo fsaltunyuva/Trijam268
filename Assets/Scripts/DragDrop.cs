@@ -18,28 +18,8 @@ public class DragDrop : MonoBehaviour
     private void OnMouseDrag()
     {
         if (!allowDrag) return;
-        transform.position = GetMouseWorldPosition() + mousePositionOffset;
+        Vector3 point = GetMouseWorldPosition() + mousePositionOffset;
+        point.y = Mathf.Clamp(point.y, 0.5f, 4.5f);
+        transform.position = point; 
     }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.name == "Drag Limit")
-        {
-            Debug.Log("Entered Drag Limit");
-            allowDrag = false;
-            Vector3 temp = gameObject.GetComponent<RectTransform>().transform.position;
-            GetComponent<RectTransform>().transform.position = new Vector3(temp.x, temp.y + 0.01f, 0);
-        }
-            
-    }
-    
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.gameObject.name == "Drag Limit")
-        {
-            Debug.Log("Exited Drag Limit");
-            allowDrag = true;
-        }
-    }
-    
 }
