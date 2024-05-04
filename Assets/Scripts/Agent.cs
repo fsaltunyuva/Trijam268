@@ -9,6 +9,7 @@ public class Agent : MonoBehaviour
     [SerializeField] DragDrop dragDrop;
     [SerializeField] Player player;
     [SerializeField] Animator playerAnimator;
+    [SerializeField] private GameObject winPanel, losePanel;
     
     private Vector2 movement;
     private Rigidbody2D rb;
@@ -55,7 +56,7 @@ public class Agent : MonoBehaviour
         dragDrop.allowDrag = false;
         player.stopDecrease = true;
         playerAnimator.SetBool("die", true);
-        //TODO: Display You Win Screen
+        StartCoroutine(WaitBeforeDisplayingWinPanel());
     }
 
     IEnumerator WaitUnderCover()
@@ -70,6 +71,12 @@ public class Agent : MonoBehaviour
         
         playerAnimator.SetBool("idle", false);
         speed = initialSpeed;
+    }
+    
+    IEnumerator WaitBeforeDisplayingWinPanel()
+    {
+        yield return new WaitForSeconds(1.5f);
+        winPanel.SetActive(true);
     }
 
     private void FixedUpdate()
@@ -125,15 +132,19 @@ public class Agent : MonoBehaviour
         else if (other.gameObject.CompareTag("EndTriggerer"))
         {
             gameOver = true;
-            //TODO: Display Game Over Screen
+            StartCoroutine(WaitBeforeDisplayingLosePanel());
             speed = 0;
             //dragDrop.allowDrag = false;
             player.stopDecrease = true;
             playerAnimator.SetBool("idle", true);
-            
         }
     }
-
+    
+    IEnumerator WaitBeforeDisplayingLosePanel()
+    {
+        yield return new WaitForSeconds(1.5f);
+        losePanel.SetActive(true);
+    }
 
     private void FlipSprite()
     {
