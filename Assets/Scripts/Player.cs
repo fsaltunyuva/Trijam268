@@ -1,11 +1,15 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] public float acids = 100;
     [SerializeField] private ParticleSystem rain;
     [SerializeField] private GameObject rainParticleSystemGameObject;
-    public float initialEmissionRate = 0;
+    private float initialEmissionRate = 0;
+    [SerializeField] private Slider acidSlider;
+    [SerializeField] private float acidDecreaseRate = 1f;
+    public bool stopDecrease = false;
 
     private void Start()
     {
@@ -22,24 +26,24 @@ public class Player : MonoBehaviour
         {
             if (acids > 0) // Check if there are acids left
             {
-                acids -= 1 * Time.deltaTime; // Decrease acids
-                //rain.Play(); // Play particle system (Not working for some reason)
+                if(!stopDecrease)
+                    acids -= acidDecreaseRate * Time.deltaTime; // Decrease acids
                 var emission = rain.emission;
                 emission.rateOverTime = initialEmissionRate;
             }
             else
             {
-                //rain.Stop(); // Stop particle system (Not working for some reason)
                 var emission = rain.emission;
                 emission.rateOverTime = 0;
             }
         }
         else
         {
-            // rain.Stop(); // Stop particle system (Not working for some reason)
             var emission = rain.emission;
             emission.rateOverTime = 0;
         }
+        
+        acidSlider.value = acids; // Update slider value
     }
 
     private void OnParticleCollision(GameObject other)

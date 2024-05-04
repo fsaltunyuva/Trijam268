@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - AgentTriggerer
+  - LeftBlockerTriggerer
+  - RightBlockerTriggerer
+  - DragLimit
+  - EndTriggerer
   layers:
   - Default
   - TransparentFX
