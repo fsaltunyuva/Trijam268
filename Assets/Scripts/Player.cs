@@ -10,12 +10,13 @@ public class Player : MonoBehaviour
     [SerializeField] private Slider acidSlider;
     [SerializeField] private float acidDecreaseRate = 1f;
     [SerializeField] Agent agentScript;
-    [SerializeField] private GameObject winPanel, losePanel;
+    [SerializeField] private GameObject winPanel, losePanel, tutorialPanel;
     [SerializeField] private AudioSource audioSource;
     
     private float initialEmissionRate = 0;
 
     public bool stopDecrease = false;
+    public bool tutorialActive = true;
 
     private void Start()
     {
@@ -30,35 +31,38 @@ public class Player : MonoBehaviour
     {
         if (!agentScript.gameOver)
         {
-            if(Input.GetKey(KeyCode.Space)) // Check if space is pressed 
+            if (!tutorialActive)
             {
-                if (acids > 0) // Check if there are acids left
+                if(Input.GetKey(KeyCode.Space)) // Check if space is pressed 
                 {
-                    if(audioSource.isPlaying == false)
-                        audioSource.Play();
-                    if(!stopDecrease)
-                        acids -= acidDecreaseRate * Time.deltaTime; // Decrease acids
-                    var emission = rain.emission;
-                    emission.rateOverTime = initialEmissionRate;
+                    if (acids > 0) // Check if there are acids left
+                    {
+                        if(audioSource.isPlaying == false)
+                            audioSource.Play();
+                        if(!stopDecrease)
+                            acids -= acidDecreaseRate * Time.deltaTime; // Decrease acids
+                        var emission = rain.emission;
+                        emission.rateOverTime = initialEmissionRate;
+                    }
+                    else
+                    {
+                        StopRain();
+                    }
                 }
                 else
                 {
+                    audioSource.Pause();
                     StopRain();
                 }
-            }
-            else
-            {
-                audioSource.Pause();
-                StopRain();
-            }
             
-            if(acids <= 0) // Check if acids are less than or equal to 0
-            {
-                stopDecrease = true; // Stop decreasing acids
-                StartCoroutine(WaitBeforeDisplayingLosePanel()); // Wait for 1.5 seconds before displaying lose panel
-            }
+                if(acids <= 0) // Check if acids are less than or equal to 0
+                {
+                    stopDecrease = true; // Stop decreasing acids
+                    StartCoroutine(WaitBeforeDisplayingLosePanel()); // Wait for 1.5 seconds before displaying lose panel
+                }
         
-            acidSlider.value = acids; // Update slider value
+                acidSlider.value = acids; // Update slider value
+            }
         }
     }
     
@@ -78,5 +82,12 @@ public class Player : MonoBehaviour
     public void RestartScene()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
+    
+    public void StartGame()
+    {
+        tutorialActive = false;
+        tutorialPanel.SetActive(false);
+        agentScript.StartAgentMovement();
     }
 }
