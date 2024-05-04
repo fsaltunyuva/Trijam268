@@ -1,15 +1,17 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = System.Random;
 
 public class Agent : MonoBehaviour
 {
     [SerializeField] public float speed = 5f;
-    [SerializeField] DragDrop dragDrop;
+    [FormerlySerializedAs("dragDrop")] [SerializeField] Cloud cloud;
     [SerializeField] Player player;
     [SerializeField] Animator playerAnimator;
     [SerializeField] private GameObject winPanel, losePanel;
+    [SerializeField] private AudioSource audioSource;
     
     private Vector2 movement;
     private Rigidbody2D rb;
@@ -53,15 +55,18 @@ public class Agent : MonoBehaviour
     {
         gameOver = true;
         speed = 0;
-        dragDrop.allowDrag = false;
+        audioSource.Pause();
+        cloud.allowDrag = false;
         player.stopDecrease = true;
         playerAnimator.SetBool("die", true);
+        player.StopRain();
         StartCoroutine(WaitBeforeDisplayingWinPanel());
     }
 
     IEnumerator WaitUnderCover()
     {
         speed = 0;
+        audioSource.Pause();
         playerAnimator.SetBool("idle", true);
         
         //Wait between 1 and 3 seconds including float values
@@ -71,6 +76,7 @@ public class Agent : MonoBehaviour
         
         playerAnimator.SetBool("idle", false);
         speed = initialSpeed;
+        audioSource.UnPause();
     }
     
     IEnumerator WaitBeforeDisplayingWinPanel()
@@ -134,6 +140,7 @@ public class Agent : MonoBehaviour
             gameOver = true;
             StartCoroutine(WaitBeforeDisplayingLosePanel());
             speed = 0;
+            audioSource.Pause();
             //dragDrop.allowDrag = false;
             player.stopDecrease = true;
             playerAnimator.SetBool("idle", true);

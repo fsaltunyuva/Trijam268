@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float acidDecreaseRate = 1f;
     [SerializeField] Agent agentScript;
     [SerializeField] private GameObject winPanel, losePanel;
+    [SerializeField] private AudioSource audioSource;
     
     private float initialEmissionRate = 0;
 
@@ -33,6 +34,8 @@ public class Player : MonoBehaviour
             {
                 if (acids > 0) // Check if there are acids left
                 {
+                    if(audioSource.isPlaying == false)
+                        audioSource.Play();
                     if(!stopDecrease)
                         acids -= acidDecreaseRate * Time.deltaTime; // Decrease acids
                     var emission = rain.emission;
@@ -40,14 +43,13 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    var emission = rain.emission;
-                    emission.rateOverTime = 0;
+                    StopRain();
                 }
             }
             else
             {
-                var emission = rain.emission;
-                emission.rateOverTime = 0;
+                audioSource.Pause();
+                StopRain();
             }
             
             if(acids <= 0) // Check if acids are less than or equal to 0
@@ -58,6 +60,13 @@ public class Player : MonoBehaviour
         
             acidSlider.value = acids; // Update slider value
         }
+    }
+    
+    public void StopRain()
+    {
+        var emission = rain.emission;
+        emission.rateOverTime = 0;
+        audioSource.Pause();
     }
     
     IEnumerator WaitBeforeDisplayingLosePanel()
