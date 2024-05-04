@@ -8122,8 +8122,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "You are the <wave>mother nature</wave> herself. \n\n<palette>Little earthling</palette> 
     has evolved enough to have <wave>3 lives</wave>.\n\nDrag the Cloud with <palette>Left
-    Click\r</palette> \n\r\nRain with <palette>Right Click</palette> or <palette>SpaceBar\r\r</palette>\n\r\nTry
-    to soak Earthling with your Acid and show how mighty Mother Nature can be..."
+    Click\r</palette> \n\r\nRain with <palette>SpaceBar\r\r</palette>\n\r\nTry to
+    soak Earthling with your Acid and show how mighty Mother Nature can be..."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 079c57ecfb0f90043b85e5c07aa62edf, type: 2}
   m_sharedMaterial: {fileID: -6005400800720893087, guid: 079c57ecfb0f90043b85e5c07aa62edf, type: 2}

@@ -54,30 +54,6 @@ public class Player : MonoBehaviour
                     audioSource.Pause();
                     StopRain();
                 }
-                
-                // :)))))))))
-                if(Input.GetKey(KeyCode.Mouse1)) // Check if space is pressed 
-                {
-                    if (acids > 0) // Check if there are acids left
-                    {
-                        if(audioSource.isPlaying == false)
-                            audioSource.Play();
-                        if(!stopDecrease)
-                            acids -= acidDecreaseRate * Time.deltaTime; // Decrease acids
-                        var emission = rain.emission;
-                        emission.rateOverTime = initialEmissionRate;
-                    }
-                    else
-                    {
-                        StopRain();
-                    }
-                }
-                else
-                {
-                    audioSource.Pause();
-                    StopRain();
-                }
-                // *:))))))))
             
                 if(acids <= 0) // Check if acids are less than or equal to 0
                 {
